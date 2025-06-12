@@ -1,0 +1,282 @@
+<?php
+	require_once "./php/main.php";
+
+    $id = (isset($_GET['user_id_up'])) ? $_GET['user_id_up'] : 0;
+    $id=limpiar_cadena($id);
+?>
+<div class="contenedor-destacado">
+    <div class="container is-fluid mb-6">
+            <?php if($id==$_SESSION['id']){ ?>
+                <h1 class="title">Mi cuenta</h1>
+                <h2 class="subtitle">Actualizar datos de cuenta</h2>
+            <?php }else{ ?>
+                <h1 class="title">Usuarios</h1>
+                <h2 class="subtitle">Actualizar usuario</h2>
+            <?php } ?>
+    </div>
+
+    <div class="container pb-6 pt-6">
+                <?php
+
+                    include "./inc/btn_back.php";
+
+                    /*== Verificando usuario ==*/
+                    $check_usuario=conexion();
+                    $check_usuario=$check_usuario->query("SELECT * FROM usuario WHERE usuario_id='$id'");
+
+                    if($check_usuario->rowCount()>0){
+                        $datos=$check_usuario->fetch();
+                ?>
+            
+
+            <div class="form-rest mb-6 mt-6"></div>
+
+            <form action="./php/usuario_actualizar.php" method="POST" class="FormularioAjax" autocomplete="off" >
+
+                <input type="hidden" name="usuario_id" value="<?php echo $datos['usuario_id']; ?>" required >
+                
+                <div class="columns">
+                    <div class="column">
+                        <div class="control">
+                            <label>Nombres</label>
+                            <input class="input" type="text" name="usuario_nombre" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,40}" maxlength="40" required value="<?php echo $datos['usuario_nombre']; ?>" >
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="control">
+                            <label>Apellidos</label>
+                            <input class="input" type="text" name="usuario_apellido" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,40}" maxlength="40" required value="<?php echo $datos['usuario_apellido']; ?>" >
+                        </div>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column">
+                        <div class="control">
+                            <label>Usuario</label>
+                            <input class="input" type="text" name="usuario_usuario" pattern="[a-zA-Z0-9]{4,20}" maxlength="20" required value="<?php echo $datos['usuario_usuario']; ?>" >
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="control">
+                            <label>Email</label>
+                            <input class="input" type="email" name="usuario_email" maxlength="70" value="<?php echo $datos['usuario_email']; ?>" >
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <p class="has-text-centered">
+                    SI desea actualizar la clave de este usuario por favor llene los 2 campos. Si NO desea actualizar la clave deje los campos vacíos.
+                </p>
+                <br>
+                <div class="columns">
+                    <div class="column">
+                        <div class="control">
+                            <label>Clave</label>
+                            <input class="input" type="password" name="usuario_clave_1" pattern="[a-zA-Z0-9$@.-]{7,100}" maxlength="100" >
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="control">
+                            <label>Repetir clave</label>
+                            <input class="input" type="password" name="usuario_clave_2" pattern="[a-zA-Z0-9$@.-]{7,100}" maxlength="100" >
+                        </div>
+                    </div>
+                </div>
+    </div>	
+                <?php if ($_SESSION['usuario_tipo'] === 'admin'): ?>		
+        <div class="columns">
+            <div class="column">
+                <div class="control">
+                    <label>Tipo de Usuario</label>
+                    <div class="user-type-selector">
+                        <div class="user-option" data-value="admin" onclick="selectUserType(this)">
+                            <span class="icon">💻</span>
+                            <span>Administrador</span>
+                        </div>
+                        <div class="user-option" data-value="empleado" onclick="selectUserType(this)">
+                            <span class="icon">👔</span>
+                            <span>Empleado</span>
+                        </div>
+                        <div class="user-option" data-value="mecanico" onclick="selectUserType(this)">
+                            <span class="icon">🔧</span>
+                            <span>Mecánico</span>
+                        </div>
+                    </div>            
+                <input type="hidden" name="usuario_tipo" id="tipoUsuario" required>
+                </div>
+            </div>	
+    <?php endif; ?>  
+
+
+
+    <?php if ($_SESSION['usuario_tipo'] === 'mecanico' || $_SESSION['usuario_tipo'] === 'empleado'): ?>
+    <div class="columns">
+        <div class="column">
+            <div class="control">
+                <label>Tipo de Usuario</label>
+                <div class="user-type-display">
+                    <div class="user-badge <?php echo htmlspecialchars($datos['usuario_tipo']); ?>">
+                        <span class="icon">
+                            <?php 
+                                switch($datos['usuario_tipo']) {
+                                    case 'admin': echo '💻'; break;
+                                    case 'empleado': echo '👔'; break;
+                                    case 'mecanico': echo '🔧'; break;
+                                }
+                            ?>
+                        </span>
+                        <span class="label">
+                            <?php 
+                                echo match($datos['usuario_tipo']) {
+                                    'admin' => 'Administrador',
+                                    'empleado' => 'Empleado',
+                                    'mecanico' => 'Mecánico'
+                                };
+                            ?>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>  
+
+		<br><br><br>
+		<p class="has-text-centered">
+			Para poder actualizar los datos de este usuario por favor ingrese su USUARIO y CLAVE con la que ha iniciado sesión
+		</p>
+		<div class="columns">
+		  	<div class="column">
+		    	<div class="control">
+					<label>Usuario</label>
+				  	<input class="input" type="text" name="administrador_usuario" pattern="[a-zA-Z0-9]{4,20}" maxlength="20" required >
+				</div>
+		  	</div>
+		  	<div class="column">
+		    	<div class="control">
+					<label>Clave</label>
+				  	<input class="input" type="password" name="administrador_clave" pattern="[a-zA-Z0-9$@.-]{7,100}" maxlength="100" required >
+				</div>
+		  	</div>
+		</div>
+		<p class="has-text-centered">
+			<button type="submit" class="button is-success is-rounded">Actualizar</button>
+		</p>
+	</form>
+	<?php 
+		}else{
+			include "./inc/error_alert.php";
+		}
+		$check_usuario=null;
+	?>
+</div>
+
+<style>
+.user-type-selector {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.user-option {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    background: #f8f9fa;
+}
+
+.user-option:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.user-option.selected {
+    border-color: #2196F3;
+    background: #e3f2fd;
+    box-shadow: 0 2px 8px rgba(33,150,243,0.1);
+}
+
+.user-option .icon {
+    display: block;
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+</style>
+
+<style>
+/* Estilos para visualización de tipo de usuario */
+.user-type-display {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.user-type-display .user-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 25px;
+    border-radius: 20px;
+    font-weight: 500;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    transition: none;
+}
+
+.user-type-display .user-badge .icon {
+    font-size: 1.4em;
+    flex-shrink: 0;
+}
+
+.user-type-display .user-badge .label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Mantener colores originales */
+.user-type-display .user-badge.admin {
+    background: #e3f2fd;
+    border: 2px solid #2196F3;
+    color: #0d47a1;
+}
+
+.user-type-display .user-badge.empleado {
+    background: #fff3e0;
+    border: 2px solid #ff9800;
+    color: #e65100;
+}
+
+.user-type-display .user-badge.mecanico {
+    background: #fbe9e7;
+    border: 2px solid #f44336;
+    color: #b71c1c;
+}
+</style>
+
+<script>
+let selectedType = null;
+
+function selectUserType(element) {
+    // Quitar selección anterior
+    if(selectedType) {
+        selectedType.classList.remove('selected');
+    }
+    
+    // Marcar nueva selección
+    element.classList.add('selected');
+    selectedType = element;
+    
+    // Actualizar campo oculto
+    const value = element.getAttribute('data-value');
+    document.getElementById('tipoUsuario').value = value;
+}
+</script>
