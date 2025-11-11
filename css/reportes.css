@@ -1,0 +1,81 @@
+/* Titulo de los reportes */
+.reporte-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Tablas de reportes */
+.reporte-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.reporte-table th,
+.reporte-table td {
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.reporte-table th {
+    background-color: #007bff;
+    color: white;
+}
+
+.reporte-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.reporte-table tr:hover {
+    background-color: #e6f0ff;
+}
+
+/* Icono principal de Reportes en el navbar */
+.navbar-start .navbar-item.has-dropdown:nth-child(5) > .navbar-link::before {
+    content: "\f201"; /* icono general de Reportes */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+/* Iconos de los subitems */
+a[href*="reporteH_new"]::before { content: "\f0ad"; font-family:"Font Awesome 6 Free"; font-weight:900; margin-right:6px; }   
+a[href*="reporteH_list"]::before { content: "\f0c3"; font-family:"Font Awesome 6 Free"; font-weight:900; margin-right:6px; }   
+a[href*="reporteP_new"]::before { content: "\f217"; font-family:"Font Awesome 6 Free"; font-weight:900; margin-right:6px; }   
+a[href*="reporteP_list"]::before { content: "\f187"; font-family:"Font Awesome 6 Free"; font-weight:900; margin-right:6px; }   
+a[href*="mantenimiento_new"]::before { content: "\f085"; font-family:"Font Awesome 6 Free"; font-weight:900; margin-right:6px; }   
+a[href*="mantenimiento_list"]::before { content: "\f0ae"; font-family:"Font Awesome 6 Free"; font-weight:900; margin-right:6px; }  
+ 
+
+
+.navbar .btn-notificacion {
+    background-color: #000;
+    color: #fff;
+    border: none;
+}
+
+.navbar .btn-notificacion:hover {
+    background-color: #333;
+}
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 80vh;
+    padding-top: 20px; 
+}
+
+.main-container .contenedor-destacado {
+    width: 100%;
+    max-width: 900px; 
+}
+
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
